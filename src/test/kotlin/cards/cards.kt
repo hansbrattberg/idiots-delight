@@ -1,4 +1,5 @@
-import idioten.*
+package cards
+
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -41,6 +42,7 @@ class TestDeckOfCards(){
         assertTrue(Card(Suits.Spades, Rank.Two) < Card(Suits.Spades, Rank.Three))
         assertEquals(0, Card(Suits.Spades, Rank.Two).compareTo(Card(Suits.Spades, Rank.Two)))
         assertTrue(Card(Suits.Spades, Rank.Three) > Card(Suits.Spades, Rank.Two))
+        assertTrue(Card(Suits.Spades, Rank.Ace) > Card(Suits.Spades, Rank.Two))
     }
 
     @Test
