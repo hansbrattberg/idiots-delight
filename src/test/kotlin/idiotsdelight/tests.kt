@@ -12,6 +12,21 @@ import org.junit.Test as test
 class TestIdiotsDelight {
 
     @test
+    fun testCardsLeft() {
+        val table = IdiotsDelight()
+        assertEquals(0, table.cardsLeft())
+        table.addFourNewCards(
+            arrayOf(
+                Card(Suits.Hearts, Rank.Two),
+                Card(Suits.Hearts, Rank.Three),
+                Card(Suits.Hearts, Rank.Four),
+                Card(Suits.Hearts, Rank.Five)
+            )
+        )
+        assertEquals(4, table.cardsLeft())
+    }
+
+    @test
     fun testAllDifferentSuits() {
         val table = IdiotsDelight()
 

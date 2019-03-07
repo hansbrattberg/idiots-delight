@@ -14,10 +14,18 @@ fun main() {
     )
     */
 
+    var count = 0
+    do {
+        val table = IdiotsDelight()
+        val cardsLeft = table.play(false)
+        print(cardsLeft.toString() + ",")
+        //println(table)
+        //println()
+        count++
+    } while (cardsLeft > 4)
 
-    val table = IdiotsDelight()
-    table.play(true)
-
+    println()
+    println(count)
 }
 
 
@@ -109,29 +117,23 @@ class IdiotsDelight {
         return arrayOf(columns[0].peek(), columns[1].peek(), columns[2].peek(), columns[3].peek())
     }
 
-    fun play(printSteps: Boolean = false) {
+    fun play(printSteps: Boolean = false): Int {
 
         val deck = Deck()
         deck.shuffle()
 
         while (deck.size() > 0) {
 
+            addFourNewCards(deck.getFourCards())
+
             do {
-                addFourNewCards(deck.getFourCards())
-
-                if (printSteps) {
-                    println(this.toString() + '\n')
-                }
-
                 removeAllLowerInSuites(printSteps)
 
             } while (moveOneCardToEmptySpace())
 
-
-            if (printSteps) {
-                println(this.toString() + '\n')
-            }
         }
+
+        return cardsLeft()
     }
 
     fun removeAllLowerInSuites(printSteps: Boolean = false) {
@@ -173,5 +175,13 @@ class IdiotsDelight {
             }
         }
         return false
+    }
+
+    fun cardsLeft(): Int {
+        var count = 0
+        for (col in 0..3) {
+            count += columns[col].size
+        }
+        return count
     }
 }
