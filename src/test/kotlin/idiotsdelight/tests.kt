@@ -428,4 +428,40 @@ class TestIdiotsDelight {
             message = Arrays.toString(table.peekTopRow())
         )
     }
+
+    @test
+    fun moveCardIntoEmptyColum() {
+        val table = IdiotsDelight()
+
+        table.addFourNewCards(
+            arrayOf(
+                Card(Suits.Hearts, Rank.Ace),
+                Card(Suits.Hearts, Rank.Two),
+                Card(Suits.Hearts, Rank.Three),
+                Card(Suits.Hearts, Rank.Four)
+            )
+        )
+        table.removeAllLowerInSuites()
+        table.addFourNewCards(
+            arrayOf(
+                Card(Suits.Hearts, Rank.Nine),
+                Card(Suits.Hearts, Rank.Eight),
+                Card(Suits.Hearts, Rank.Seven),
+                Card(Suits.Hearts, Rank.Six)
+            )
+        )
+        table.removeAllLowerInSuites()
+
+        table.moveOneCardToEmptySpace()
+
+        assertTrue(
+            arrayOf(
+                Card(Suits.Hearts, Rank.Ace),
+                null,
+                null,
+                Card(Suits.Hearts, Rank.Nine)
+            ) contentEquals table.peekTopRow(),
+            message = Arrays.toString(table.peekTopRow())
+        )
+    }
 }

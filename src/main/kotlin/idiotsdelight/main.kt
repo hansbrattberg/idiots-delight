@@ -116,12 +116,21 @@ class IdiotsDelight {
 
         while (deck.size() > 0) {
 
-            addFourNewCards(deck.getFourCards())
+            do {
+                addFourNewCards(deck.getFourCards())
+
+                if (printSteps) {
+                    println(this.toString() + '\n')
+                }
+
+                removeAllLowerInSuites(printSteps)
+
+            } while (moveOneCardToEmptySpace())
+
 
             if (printSteps) {
                 println(this.toString() + '\n')
             }
-            removeAllLowerInSuites(printSteps)
         }
     }
 
@@ -138,4 +147,31 @@ class IdiotsDelight {
         }
     }
 
+    fun moveOneCardToEmptySpace(): Boolean {
+        // find one empty space
+        var emptyCol = -1
+        for (c in 0..3) {
+            if (columns[c].isEmpty()) {
+                emptyCol = c
+            }
+        }
+
+        // find one column with more than 1 card in it
+        var columnWithMoreThanOneCard = -1
+        for (c in 0..3) {
+            if (columns[c].size > 1) {
+                columnWithMoreThanOneCard = c
+            }
+        }
+
+        // move card
+        if (emptyCol != -1 && columnWithMoreThanOneCard != -1) {
+            val card = columns[columnWithMoreThanOneCard].pop()
+            if (card != null) {
+                columns[emptyCol].push(card)
+                return true
+            }
+        }
+        return false
+    }
 }
