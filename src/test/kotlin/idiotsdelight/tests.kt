@@ -9,13 +9,37 @@ import kotlin.test.*
 
 import org.junit.Test as test
 
-class TestIdiotsDelight {
+class BoardTests {
+
+    lateinit var board: Board
+
+    @BeforeTest
+    fun initBoard(){
+        board = Board()
+    }
+
+
+    @test
+    fun testCone(){
+        board.addCard(0, Card(Suits.Diamonds, Rank.Nine))
+        board.addCard(1, Card(Suits.Diamonds, Rank.Eight))
+        val clonedBoard = board.clone()
+        assertEquals(2, board.cardsLeft())
+        assertEquals(2, clonedBoard.cardsLeft())
+
+        board.removeLowestInSuit(0, 1)
+        assertEquals(1, board.cardsLeft())
+        assertEquals(2, clonedBoard.cardsLeft())
+    }
 
     @test
     fun testCardsLeft() {
-        val table = IdiotsDelight()
-        assertEquals(0, table.cardsLeft())
-        table.addFourNewCards(
+        assertEquals(0, board.cardsLeft())
+
+        board.addCard(0, Card(Suits.Diamonds,Rank.Nine))
+        assertEquals(1, board.cardsLeft())
+
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Two),
                 Card(Suits.Hearts, Rank.Three),
@@ -23,8 +47,91 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Five)
             )
         )
-        assertEquals(4, table.cardsLeft())
+        assertEquals(5, board.cardsLeft())
     }
+
+    @test
+    fun testRemoveLowestCardBothNull() {
+        assertEquals(null, board.removeLowestInSuit(1, 2))
+        assertEquals(0, board.cardsCount(0))
+        assertEquals(0, board.cardsCount(1))
+    }
+
+    @test
+    fun testRemoveLowestCardOneNull() {
+        board.addCard(0, Card(Suits.Spades, Rank.Three))
+
+        assertEquals(null, board.removeLowestInSuit(1, 2))
+        assertEquals(1, board.cardsCount(0))
+        assertEquals(0, board.cardsCount(1))
+    }
+
+
+    @test
+    fun testRemoveLowestCardTwoSpades() {
+        board.addCard(0, Card(Suits.Spades, Rank.Two))
+        board.addCard(1, Card(Suits.Spades, Rank.Three))
+
+        assertEquals(Card(Suits.Spades, Rank.Two), board.removeLowestInSuit(0, 1))
+        assertEquals(0, board.cardsCount(0))
+        assertEquals(1, board.cardsCount(1))
+    }
+
+    @test
+    fun testRemoveLowestCardTwoSpadesReverseOrder() {
+        board.addCard(0, Card(Suits.Spades, Rank.Three))
+        board.addCard(1, Card(Suits.Spades, Rank.Two))
+
+        assertEquals(Card(Suits.Spades, Rank.Two), board.removeLowestInSuit(0, 1))
+        assertEquals(1, board.cardsCount(0))
+        assertEquals(0, board.cardsCount(1))
+    }
+
+    @test
+    fun testRemoveLowestCardDifferentSuit() {
+        board.addCard(0, Card(Suits.Spades, Rank.Three))
+        board.addCard(1, Card(Suits.Diamonds, Rank.Three))
+
+        assertEquals(null, board.removeLowestInSuit(0, 1))
+
+        assertEquals(1, board.cardsCount(0))
+        assertEquals(1, board.cardsCount(1))
+    }
+
+
+    @test(expected = SameCardException::class)
+    fun testRemoveLowestCardSameCards() {
+        board.addCard(0, Card(Suits.Hearts, Rank.Two))
+        board.addCard(1, Card(Suits.Hearts, Rank.Two))
+
+        board.removeLowestInSuit(0, 1)
+
+    }
+
+    @test
+    fun testRemoveInOneSuitDoNothing() {
+        board.addFourNewCards(
+            arrayOf(
+                Card(Suits.Hearts, Rank.Two),
+                Card(Suits.Hearts, Rank.Three),
+                Card(Suits.Hearts, Rank.Four),
+                Card(Suits.Hearts, Rank.Five)
+            )
+        )
+
+        assertTrue(
+            arrayOf<Card?>(
+                Card(Suits.Hearts, Rank.Two),
+                Card(Suits.Hearts, Rank.Three),
+                Card(Suits.Hearts, Rank.Four),
+                Card(Suits.Hearts, Rank.Five)
+            ) contentEquals board.peekTopRow()
+        )
+    }
+}
+
+class TestIdiotsDelight {
+
 
     @test
     fun testAllDifferentSuits() {
@@ -102,106 +209,11 @@ class TestIdiotsDelight {
         )
     }
 
-    @test
-    fun testRemoveLowestCardBothNull() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf()
-        val cardColumn2: MutableList<Card> = mutableListOf()
-
-        assertEquals(null, table.removeLowestInSuit(cardColumn1, cardColumn2))
-        assertEquals(0, cardColumn1.size)
-        assertEquals(0, cardColumn2.size)
-    }
-
-    @test
-    fun testRemoveLowestCardOneNull() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Three))
-        val cardColumn2: MutableList<Card> = mutableListOf()
-
-        assertEquals(null, table.removeLowestInSuit(cardColumn1, cardColumn2))
-        assertEquals(1, cardColumn1.size)
-        assertEquals(0, cardColumn2.size)
-    }
-
-    @test
-    fun testRemoveLowestCardTwoSpades() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Two))
-        val cardColumn2: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Three))
-
-        assertEquals(Card(Suits.Spades, Rank.Two), table.removeLowestInSuit(cardColumn1, cardColumn2))
-        assertEquals(0, cardColumn1.size)
-        assertEquals(1, cardColumn2.size)
-    }
-
-    @test
-    fun testRemoveLowestCardTwoSpadesReverseOrder() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Three))
-        val cardColumn2: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Two))
-
-        assertEquals(Card(Suits.Spades, Rank.Two), table.removeLowestInSuit(cardColumn1, cardColumn2))
-        assertEquals(1, cardColumn1.size)
-        assertEquals(0, cardColumn2.size)
-    }
-
-    @test
-    fun testRemoveLowestCardDifferentSuit() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf(Card(Suits.Spades, Rank.Three))
-        val cardColumn2: MutableList<Card> = mutableListOf(Card(Suits.Hearts, Rank.Two))
-
-        assertEquals(null, table.removeLowestInSuit(cardColumn1, cardColumn2))
-        assertEquals(1, cardColumn1.size)
-        assertEquals(1, cardColumn2.size)
-    }
-
-
-    @test(expected = SameCardException::class)
-    fun testRemoveLowestCardSameCards() {
-        val table = IdiotsDelight()
-
-        val cardColumn1: MutableList<Card> = mutableListOf(Card(Suits.Hearts, Rank.Two))
-        val cardColumn2: MutableList<Card> = mutableListOf(Card(Suits.Hearts, Rank.Two))
-
-        table.removeLowestInSuit(cardColumn1, cardColumn2)
-
-    }
-
-    @test
-    fun restRemoveInOneSuitDoNothing() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
-            arrayOf(
-                Card(Suits.Hearts, Rank.Two),
-                Card(Suits.Hearts, Rank.Three),
-                Card(Suits.Hearts, Rank.Four),
-                Card(Suits.Hearts, Rank.Five)
-            )
-        )
-
-        assertTrue(
-            arrayOf<Card?>(
-                Card(Suits.Hearts, Rank.Two),
-                Card(Suits.Hearts, Rank.Three),
-                Card(Suits.Hearts, Rank.Four),
-                Card(Suits.Hearts, Rank.Five)
-            ) contentEquals table.peekTopRow()
-        )
-    }
 
     @test
     fun restRemoveInOneSuitAllDifferentSuits() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Two),
                 Card(Suits.Spades, Rank.Two),
@@ -209,6 +221,8 @@ class TestIdiotsDelight {
                 Card(Suits.Diamonds, Rank.Two)
             )
         )
+
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -218,16 +232,16 @@ class TestIdiotsDelight {
                 Card(Suits.Spades, Rank.Two),
                 Card(Suits.Clubs, Rank.Two),
                 Card(Suits.Diamonds, Rank.Two)
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitTwoHeartsLowestFirst() {
-        val table = IdiotsDelight()
 
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Two),
                 Card(Suits.Hearts, Rank.Three),
@@ -235,6 +249,7 @@ class TestIdiotsDelight {
                 Card(Suits.Diamonds, Rank.Two)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -244,16 +259,15 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Three),
                 Card(Suits.Clubs, Rank.Two),
                 Card(Suits.Diamonds, Rank.Two)
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitTwoHartsBiggestFirst() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Three),
                 Card(Suits.Hearts, Rank.Two),
@@ -261,6 +275,7 @@ class TestIdiotsDelight {
                 Card(Suits.Diamonds, Rank.Two)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -270,15 +285,15 @@ class TestIdiotsDelight {
                 null,
                 Card(Suits.Clubs, Rank.Two),
                 Card(Suits.Diamonds, Rank.Two)
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitTwoHeartsInTheMiddle() {
-        val table = IdiotsDelight()
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Diamonds, Rank.Two),
                 Card(Suits.Hearts, Rank.Three),
@@ -286,6 +301,7 @@ class TestIdiotsDelight {
                 Card(Suits.Clubs, Rank.Two)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -296,16 +312,15 @@ class TestIdiotsDelight {
                 null,
                 Card(Suits.Clubs, Rank.Two)
 
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitTwoHeartsColumn1and3() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Three),
                 Card(Suits.Diamonds, Rank.Three),
@@ -313,6 +328,7 @@ class TestIdiotsDelight {
                 Card(Suits.Clubs, Rank.Two)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -323,16 +339,16 @@ class TestIdiotsDelight {
                 null,
                 Card(Suits.Clubs, Rank.Two)
 
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitTwoHeartsCoumn1and4() {
-        val table = IdiotsDelight()
 
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Three),
                 Card(Suits.Diamonds, Rank.Three),
@@ -340,6 +356,7 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Two)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -350,15 +367,14 @@ class TestIdiotsDelight {
                 Card(Suits.Clubs, Rank.Two),
                 null
 
-            ) contentEquals table.peekTopRow()
+            ) contentEquals board.peekTopRow()
         )
     }
 
     @test
     fun restRemoveInOneSuitThreeHearts() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Four),
                 Card(Suits.Hearts, Rank.Three),
@@ -366,7 +382,7 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Two)
             )
         )
-
+        val table = IdiotsDelight(board)
         table.removeAllLowerInSuites()
 
         assertTrue(
@@ -376,16 +392,15 @@ class TestIdiotsDelight {
                 Card(Suits.Clubs, Rank.Two),
                 null
 
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitAllHearts() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Queen),
                 Card(Suits.Hearts, Rank.Three),
@@ -393,6 +408,7 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Four)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.addFourNewCards(
             arrayOf(
@@ -412,16 +428,15 @@ class TestIdiotsDelight {
                 null,
                 null
 
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun restRemoveInOneSuitAllHeartsAceBiggest() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Ace),
                 Card(Suits.Hearts, Rank.Three),
@@ -429,6 +444,7 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Four)
             )
         )
+        val table = IdiotsDelight(board)
 
         table.removeAllLowerInSuites()
 
@@ -439,16 +455,15 @@ class TestIdiotsDelight {
                 null,
                 null
 
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
 
     @test
     fun moveCardIntoEmptyColum() {
-        val table = IdiotsDelight()
-
-        table.addFourNewCards(
+        val board = Board()
+        board.addFourNewCards(
             arrayOf(
                 Card(Suits.Hearts, Rank.Ace),
                 Card(Suits.Hearts, Rank.Two),
@@ -456,6 +471,8 @@ class TestIdiotsDelight {
                 Card(Suits.Hearts, Rank.Four)
             )
         )
+        val table = IdiotsDelight(board)
+
         table.removeAllLowerInSuites()
         table.addFourNewCards(
             arrayOf(
@@ -467,7 +484,7 @@ class TestIdiotsDelight {
         )
         table.removeAllLowerInSuites()
 
-        table.moveOneCardToEmptySpace()
+        board.moveOneCardToEmptySpace()
 
         assertTrue(
             arrayOf(
@@ -475,8 +492,9 @@ class TestIdiotsDelight {
                 null,
                 null,
                 Card(Suits.Hearts, Rank.Nine)
-            ) contentEquals table.peekTopRow(),
-            message = Arrays.toString(table.peekTopRow())
+            ) contentEquals board.peekTopRow(),
+            message = Arrays.toString(board.peekTopRow())
         )
     }
+
 }
