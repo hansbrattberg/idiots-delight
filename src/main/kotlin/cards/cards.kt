@@ -3,17 +3,21 @@ package cards
 import com.andreapivetta.kolor.Color
 import com.andreapivetta.kolor.Kolor
 
-enum class Suits(private val str: String) {
-    Spades("\u2660"), Hearts(Kolor.foreground("\u2665", Color.RED)), Diamonds(
-        Kolor.foreground(
-            "\u2666",
-            Color.RED
-        )
-    ),
-    Clubs("\u2663");
+enum class Suits(private val str: String, private val color: Color) {
+    Spades("\u2660", Color.BLACK),
+    Hearts("\u2665", Color.RED),
+    Diamonds("\u2666", Color.LIGHT_RED),
+    Clubs("\u2663", Color.DARK_GRAY);
 
     override fun toString(): String {
         return str
+    }
+
+    fun toColoredString(): String {
+        return Kolor.foreground(
+            str,
+            color
+        )
     }
 }
 
@@ -32,14 +36,18 @@ enum class Rank(private val value: Int) {
     }
 }
 
-data class Card(val suit: Suits, val rank: Rank) {
+data class Card(val rank: Rank, val suit: Suits) {
 
     operator fun compareTo(card: Card): Int {
         return this.rank.compareTo(card.rank)
     }
 
     override fun toString(): String {
-        return suit.toString() + rank.toString()
+        return rank.toString() + suit.toString()
+    }
+
+    fun toColoredString(): String {
+        return rank.toString() + suit.toColoredString()
     }
 }
 
@@ -63,7 +71,7 @@ class Deck {
     init {
         enumValues<Suits>().forEach { suit ->
             enumValues<Rank>().forEach { rank ->
-                cards.push(Card(suit, rank))
+                cards.push(Card(rank, suit))
             }
         }
     }
