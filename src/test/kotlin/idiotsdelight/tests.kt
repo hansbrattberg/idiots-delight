@@ -236,9 +236,7 @@ class TestIdiotsDelight {
             )
         )
 
-        val table = IdiotsDelight(board)
-
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf<Card?>(
@@ -263,9 +261,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Diamonds)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -289,9 +286,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Diamonds)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -315,9 +311,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -342,9 +337,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -370,9 +364,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Hearts)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -396,8 +389,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Hearts)
             )
         )
-        val table = IdiotsDelight(board)
-        table.removeAllLowerCardsInAllSuites(board)
+
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -422,9 +415,8 @@ class TestIdiotsDelight {
                 Card(Rank.Four, Suits.Hearts)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.addFourNewCards(
+        board.addFourNewCards(
             arrayOf(
                 Card(Rank.Nine, Suits.Hearts),
                 Card(Rank.Ten, Suits.Hearts),
@@ -433,7 +425,7 @@ class TestIdiotsDelight {
             )
         )
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -458,9 +450,8 @@ class TestIdiotsDelight {
                 Card(Rank.Four, Suits.Hearts)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
+        removeAllLowerCardsInAllSuites(board)
 
         assertTrue(
             arrayOf(
@@ -485,10 +476,10 @@ class TestIdiotsDelight {
                 Card(Rank.Four, Suits.Hearts)
             )
         )
-        val table = IdiotsDelight(board)
 
-        table.removeAllLowerCardsInAllSuites(board)
-        table.addFourNewCards(
+        removeAllLowerCardsInAllSuites(board)
+
+        board.addFourNewCards(
             arrayOf(
                 Card(Rank.Nine, Suits.Hearts),
                 Card(Rank.Eight, Suits.Hearts),
@@ -496,8 +487,8 @@ class TestIdiotsDelight {
                 Card(Rank.Six, Suits.Hearts)
             )
         )
-        table.removeAllLowerCardsInAllSuites(board)
-        val boardResult = table.moveCardToEmptySlot(board)
+        removeAllLowerCardsInAllSuites(board)
+        val boardResult = moveCardToEmptySlot(board)
 
         assertTrue(
             arrayOf(
@@ -519,8 +510,7 @@ class TestIdiotsDelight {
         board.addCard(1, Card(Rank.Five, Suits.Diamonds))
         board.addCard(2, Card(Rank.Five, Suits.Hearts))
 
-        val table = IdiotsDelight(board)
-        val result = table.moveCardToEmptySlot(board)
+        val result = moveCardToEmptySlot(board)
 
         assertEquals(4, result.cardsCount())
 
@@ -535,8 +525,7 @@ class TestIdiotsDelight {
         board.addCard(1, Card(Rank.Four, Suits.Clubs))
         board.addCard(2, Card(Rank.Five, Suits.Hearts))
 
-        val table = IdiotsDelight(board)
-        val result = table.moveCardToEmptySlot(board)
+        val result = moveCardToEmptySlot(board)
 
         assertEquals(4, result.cardsCount())
 

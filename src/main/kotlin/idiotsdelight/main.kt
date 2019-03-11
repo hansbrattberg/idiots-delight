@@ -1,6 +1,8 @@
 package idiotsdelight
 
 import cards.*
+import com.andreapivetta.kolor.Color
+import com.andreapivetta.kolor.Kolor
 
 fun main() {
 
@@ -34,9 +36,9 @@ fun main() {
 
     */
 
-/*
+
     var countSuccess = 0
-    val noOfTimes = 100000
+    val noOfTimes = 10000000
     val buckets = hashMapOf<Int, Int>()
     for (key in 4..52) {
         buckets[key] = 0
@@ -71,7 +73,6 @@ fun main() {
     }
     println(bucketsPercent.values)
 
-*/
 
 }
 
@@ -146,14 +147,8 @@ class Board {
         return result
     }
 
-    fun moveCard(from: Int, to: Int) {
-        val card = columns[from].pop()
-        if (card != null) {
-            columns[to].push(card)
-        }
-    }
 
-    fun getFirstEmptyColumn(): Int {
+    private fun getFirstEmptyColumn(): Int {
         var emptyCol = -1
         for (c in 0..3) {
             if (columns[c].isEmpty()) {
@@ -211,7 +206,7 @@ class Board {
         return result.toTypedArray()
     }
 
-    fun hasColumnWithMoreThanOneCard(): Boolean {
+    private fun hasColumnWithMoreThanOneCard(): Boolean {
         for (col in 0..3) {
             if (columns[col].size > 1) {
                 return true
@@ -220,7 +215,7 @@ class Board {
         return false
     }
 
-    fun isPossibleToMoveCard() = hasEmptyColumn() && hasColumnWithMoreThanOneCard()
+    fun canMoveCardtoEmptySlot() = hasEmptyColumn() && hasColumnWithMoreThanOneCard()
 
     fun allTopCardsInDifferentSuits(): Boolean {
         var heartCount = 0
@@ -275,7 +270,8 @@ class Board {
         for (row in 0 until maxSize) {
             for (col in 0..3) {
                 val card = columns[col].getOrNull(row)
-                result += card?.toColoredString() ?: "--"
+
+                result += card?.toColoredString() ?: Kolor.foreground("--", Color.LIGHT_GRAY)
                 if (col < 3) {
                     result += ' '
                 }
@@ -297,8 +293,9 @@ class IdiotsDelight(private var board: Board, private val printSteps: Boolean = 
         return board.toString()
     }
 
-    fun addFourNewCards(fourCards: Array<Card>) {
+    private fun addFourNewCards(fourCards: Array<Card>) {
         board.addFourNewCards(fourCards)
+        printSteps(board, printSteps)
     }
 
 
@@ -309,69 +306,69 @@ class IdiotsDelight(private var board: Board, private val printSteps: Boolean = 
 
         while (deck.size() > 0) {
             addFourNewCards(deck.getFourCards())
-            board = removeAllPossibleCards(board)
+            board = removeAllPossibleCards(board, printSteps)
         }
 
         return board.cardsCount()
     }
+}
 
-    fun removeAllPossibleCards(board: Board): Board {
-        var result = board
-        while (result.isPossibleToMoveCard() || !result.allTopCardsInDifferentSuits()) {
-            if( !result.allTopCardsInDifferentSuits() ) {
-                removeAllLowerCardsInAllSuites(result)
-            }
-
-            if( result.isPossibleToMoveCard() ) {
-                result = moveCardToEmptySlot(result)
-            }
-        }
-        return result
+private fun printSteps(board: Board, printSteps: Boolean) {
+    if (printSteps) {
+        println(board.toColoredString())
+        println()
     }
+}
 
-    fun moveCardToEmptySlot(board: Board): Board {
-        val boards = board.getBoardVariantsMovingCardToEmptySlot()
-
-        if (boards.size == 1) {
-            return boards.first()
-        } else {
-            val results = mutableListOf<Board>()
-            boards.forEach() { b ->
-                val element = removeAllPossibleCards(b)
-                results.add(element)
-            }
-
-            lateinit var lowestNoOfCardsBoard: Board
-            var lowestNumberOfCards = Integer.MAX_VALUE
-            for (boardCount in 0..results.size-1) {
-                if (results[boardCount].cardsCount() < lowestNumberOfCards) {
-                    lowestNumberOfCards = results[boardCount].cardsCount()
-                    lowestNoOfCardsBoard = results[boardCount]
-                }
-            }
-            return lowestNoOfCardsBoard
-        }
-    }
-
-    fun removeAllLowerCardsInAllSuites(board: Board) {
-        while (!board.allTopCardsInDifferentSuits()) {
-            for (col1 in 0..2) {
-                for (col2 in col1 + 1..3) {
-                    val result = board.removeLowestInSuit(col1, col2)
-                    if (result != null) printSteps()
-                }
+fun removeAllLowerCardsInAllSuites(board: Board, printSteps: Boolean = false) {
+    while (canRemoveCardsInSameSuite(board)) {
+        for (col1 in 0..2) {
+            for (col2 in col1 + 1..3) {
+                val result = board.removeLowestInSuit(col1, col2)
+                if (result != null) printSteps(board, printSteps)
             }
         }
     }
+}
 
-    private fun printSteps() {
-        if (printSteps) {
-            println(this.toColoredString())
-            println()
+private fun canRemoveCardsInSameSuite(result: Board) = !result.allTopCardsInDifferentSuits()
+
+fun moveCardToEmptySlot(board: Board, printSteps: Boolean = false): Board {
+    val boards = board.getBoardVariantsMovingCardToEmptySlot()
+
+    if (boards.size == 1) {
+        return boards.first()
+    } else {
+        val results = mutableListOf<Board>()
+        boards.forEach { b ->
+            val element = removeAllPossibleCards(b, printSteps)
+            results.add(element)
         }
-    }
 
-    private fun toColoredString(): String {
-        return board.toColoredString()
+        lateinit var lowestNoOfCardsBoard: Board
+        var lowestNumberOfCards = Integer.MAX_VALUE
+        for (boardCount in 0 until results.size) {
+            if (results[boardCount].cardsCount() < lowestNumberOfCards) {
+                lowestNumberOfCards = results[boardCount].cardsCount()
+                lowestNoOfCardsBoard = results[boardCount]
+            }
+        }
+        return lowestNoOfCardsBoard
     }
+}
+
+private fun removeAllPossibleCards(board: Board, printSteps: Boolean): Board {
+    var b = board
+    while (b.canMoveCardtoEmptySlot() || canRemoveCardsInSameSuite(b)) {
+
+        if (canRemoveCardsInSameSuite(b)) {
+            removeAllLowerCardsInAllSuites(b, printSteps)
+        }
+
+        if (b.canMoveCardtoEmptySlot()) {
+            b = moveCardToEmptySlot(b, printSteps)
+        }
+
+    }
+    return b
 }
