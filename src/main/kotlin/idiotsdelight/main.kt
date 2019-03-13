@@ -334,6 +334,11 @@ fun removeAllLowerCardsInAllSuites(board: Board, printSteps: Boolean = false) {
 private fun canRemoveCardsInSameSuite(result: Board) = !result.allTopCardsInDifferentSuits()
 
 fun moveCardToEmptySlot(board: Board, printSteps: Boolean = false): Board {
+
+    if (!board.canMoveCardtoEmptySlot()) {
+        return board
+    }
+
     val boards = board.getBoardVariantsMovingCardToEmptySlot()
 
     if (boards.size == 1) {
@@ -360,15 +365,8 @@ fun moveCardToEmptySlot(board: Board, printSteps: Boolean = false): Board {
 private fun removeAllPossibleCards(board: Board, printSteps: Boolean): Board {
     var b = board
     while (b.canMoveCardtoEmptySlot() || canRemoveCardsInSameSuite(b)) {
-
-        if (canRemoveCardsInSameSuite(b)) {
-            removeAllLowerCardsInAllSuites(b, printSteps)
-        }
-
-        if (b.canMoveCardtoEmptySlot()) {
-            b = moveCardToEmptySlot(b, printSteps)
-        }
-
+        removeAllLowerCardsInAllSuites(b, printSteps)
+        b = moveCardToEmptySlot(b, printSteps)
     }
     return b
 }
