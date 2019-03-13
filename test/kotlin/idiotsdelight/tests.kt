@@ -1,25 +1,31 @@
 package idiotsdelight
 
+import java.util.*
+
 import cards.Card
 import cards.Rank
 import cards.Suits
 
-import java.util.*
-import kotlin.test.*
-
-import org.junit.Test as test
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.*
 
 class BoardTests {
 
+    class N00StartKtTest {
+        @Test
+        fun testOk() {
+            assertTrue(true)
+        }
+    }
+
     lateinit var board: Board
 
-    @BeforeTest
+    @BeforeEach
     fun initBoard() {
         board = Board()
     }
 
-
-    @test
+    @Test
     fun testCone() {
         board.addCard(0, Card(Rank.Nine, Suits.Diamonds))
         board.addCard(1, Card(Rank.Eight, Suits.Diamonds))
@@ -32,7 +38,7 @@ class BoardTests {
         assertEquals(2, clonedBoard.cardsCount())
     }
 
-    @test
+    @Test
     fun testCardsLeft() {
         assertEquals(0, board.cardsCount())
 
@@ -50,14 +56,14 @@ class BoardTests {
         assertEquals(5, board.cardsCount())
     }
 
-    @test
+    @Test
     fun testRemoveLowestCardBothNull() {
         assertEquals(null, board.removeLowestInSuit(1, 2))
         assertEquals(0, board.cardsCount(0))
         assertEquals(0, board.cardsCount(1))
     }
 
-    @test
+    @Test
     fun testRemoveLowestCardOneNull() {
         board.addCard(0, Card(Rank.Three, Suits.Spades))
 
@@ -67,7 +73,7 @@ class BoardTests {
     }
 
 
-    @test
+    @Test
     fun testRemoveLowestCardTwoSpades() {
         board.addCard(0, Card(Rank.Two, Suits.Spades))
         board.addCard(1, Card(Rank.Three, Suits.Spades))
@@ -77,7 +83,7 @@ class BoardTests {
         assertEquals(1, board.cardsCount(1))
     }
 
-    @test
+    @Test
     fun testRemoveLowestCardTwoSpadesReverseOrder() {
         board.addCard(0, Card(Rank.Three, Suits.Spades))
         board.addCard(1, Card(Rank.Two, Suits.Spades))
@@ -87,7 +93,7 @@ class BoardTests {
         assertEquals(0, board.cardsCount(1))
     }
 
-    @test
+    @Test
     fun testRemoveLowestCardDifferentSuit() {
         board.addCard(0, Card(Rank.Three, Suits.Spades))
         board.addCard(1, Card(Rank.Three, Suits.Diamonds))
@@ -99,16 +105,17 @@ class BoardTests {
     }
 
 
-    @test(expected = SameCardException::class)
+    @Test
     fun testRemoveLowestCardSameCards() {
         board.addCard(0, Card(Rank.Two, Suits.Hearts))
         board.addCard(1, Card(Rank.Two, Suits.Hearts))
 
-        board.removeLowestInSuit(0, 1)
-
+        Assertions.assertThrows(SameCardException::class.java, {
+            board.removeLowestInSuit(0, 1)
+        })
     }
 
-    @test
+    @Test
     fun testRemoveInOneSuitDoNothing() {
         board.addFourNewCards(
             arrayOf(
@@ -129,7 +136,7 @@ class BoardTests {
         )
     }
 
-    @test
+    @Test
     fun testGetAllPossibleMovesOneCardMovable() {
         board.addCard(0, Card(Rank.Four, Suits.Spades))
         board.addCard(0, Card(Rank.Five, Suits.Hearts))
@@ -144,7 +151,7 @@ class BoardTests {
         assertEquals(1, boardVariants.size)
     }
 
-    @test
+    @Test
     fun testGetAllPossibleMovesTwoCardsMovableToOneSlot() {
         board.addCard(0, Card(Rank.Four, Suits.Spades))
         board.addCard(0, Card(Rank.Five, Suits.Hearts))
@@ -160,7 +167,7 @@ class BoardTests {
         assertEquals(2, boardVariants.size)
     }
 
-    @test
+    @Test
     fun testCardCount() {
         board.addCard(0, Card(Rank.Four, Suits.Spades))
         board.addCard(1, Card(Rank.Four, Suits.Hearts))
@@ -170,20 +177,20 @@ class BoardTests {
         assertEquals(4, board.cardsCount())
     }
 
-    @test
+    @Test
     fun testAllDifferentSuitsAllEmptyColumns() {
 
         assertTrue(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsTwoHeartsAndTwoEmptyCols() {
         board.addCard(0, Card(Rank.Two, Suits.Hearts))
         board.addCard(1, Card(Rank.Three, Suits.Hearts))
         assertFalse(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsFourHearts() {
         board.addCard(0, Card(Rank.Two, Suits.Hearts))
         board.addCard(1, Card(Rank.Three, Suits.Hearts))
@@ -192,28 +199,28 @@ class BoardTests {
         assertFalse(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsOneHeartsOneSpadesTwoEmpty() {
         board.addCard(0, Card(Rank.Two, Suits.Hearts))
         board.addCard(1, Card(Rank.Three, Suits.Spades))
         assertTrue(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsTwoSpadesTwoEmpty() {
         board.addCard(2, Card(Rank.Two, Suits.Spades))
         board.addCard(3, Card(Rank.Three, Suits.Spades))
         assertFalse(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsTwoClubsTwoEmpty() {
         board.addCard(2, Card(Rank.Two, Suits.Clubs))
         board.addCard(3, Card(Rank.Three, Suits.Clubs))
         assertFalse(board.allTopCardsInDifferentSuits())
     }
 
-    @test
+    @Test
     fun testAllTopCardsInDifferentSuitsDiamondsClubsTwoEmpty() {
         board.addCard(1, Card(Rank.Two, Suits.Diamonds))
         board.addCard(2, Card(Rank.Three, Suits.Diamonds))
@@ -224,7 +231,7 @@ class BoardTests {
 class TestIdiotsDelight {
 
 
-    @test
+    @Test
     fun restRemoveInOneSuitAllDifferentSuits() {
         val board = Board()
         board.addFourNewCards(
@@ -245,11 +252,11 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitTwoHeartsLowestFirst() {
 
         val board = Board()
@@ -271,11 +278,11 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitTwoHartsBiggestFirst() {
         val board = Board()
         board.addFourNewCards(
@@ -296,11 +303,11 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitTwoHeartsInTheMiddle() {
         val board = Board()
         board.addFourNewCards(
@@ -322,11 +329,11 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs)
 
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitTwoHeartsColumn1and3() {
         val board = Board()
         board.addFourNewCards(
@@ -348,11 +355,11 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs)
 
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitTwoHeartsCoumn1and4() {
 
         val board = Board()
@@ -378,7 +385,7 @@ class TestIdiotsDelight {
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitThreeHearts() {
         val board = Board()
         board.addFourNewCards(
@@ -400,11 +407,11 @@ class TestIdiotsDelight {
                 null
 
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitAllHearts() {
         val board = Board()
         board.addFourNewCards(
@@ -435,11 +442,11 @@ class TestIdiotsDelight {
                 null
 
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun restRemoveInOneSuitAllHeartsAceBiggest() {
         val board = Board()
         board.addFourNewCards(
@@ -461,12 +468,12 @@ class TestIdiotsDelight {
                 null
 
             ) contentEquals board.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
-    fun moveCardIntoEmptyColumn() {
+    @Test
+    fun testMoveCardIntoEmptyColumn() {
         val board = Board()
         board.addFourNewCards(
             arrayOf(
@@ -497,11 +504,11 @@ class TestIdiotsDelight {
                 null,
                 Card(Rank.Nine, Suits.Hearts)
             ) contentEquals boardResult.peekTopRow(),
-            message = Arrays.toString(board.peekTopRow())
+            Arrays.toString(board.peekTopRow())
         )
     }
 
-    @test
+    @Test
     fun testMultiplePossibleBoards() {
         val board = Board()
         board.addCard(0, Card(Rank.Five, Suits.Clubs))
@@ -516,7 +523,7 @@ class TestIdiotsDelight {
 
     }
 
-    @test
+    @Test
     fun testMultiplePossibleBoards2() {
         val board = Board()
         board.addCard(0, Card(Rank.Four, Suits.Spades))
