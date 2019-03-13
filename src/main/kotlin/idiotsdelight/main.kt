@@ -38,7 +38,7 @@ fun main() {
 
 
     var countSuccess = 0
-    val noOfTimes = 10000000
+    val noOfTimes = 1000
     val buckets = hashMapOf<Int, Int>()
     for (key in 4..52) {
         buckets[key] = 0
