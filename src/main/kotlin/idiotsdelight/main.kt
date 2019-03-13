@@ -271,7 +271,7 @@ class Board {
             for (col in 0..3) {
                 val card = columns[col].getOrNull(row)
 
-                result += card?.toColoredString() ?: Kolor.foreground("--", Color.LIGHT_GRAY)
+                result += card?.toColoredString() ?: Kolor.foreground("--", Color.LIGHT_YELLOW)
                 if (col < 3) {
                     result += ' '
                 }

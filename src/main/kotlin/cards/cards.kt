@@ -4,10 +4,10 @@ import com.andreapivetta.kolor.Color
 import com.andreapivetta.kolor.Kolor
 
 enum class Suits(private val str: String, private val color: Color) {
-    Spades("\u2660", Color.BLACK),
+    Spades("\u2660", Color.DARK_GRAY),
     Hearts("\u2665", Color.RED),
     Diamonds("\u2666", Color.LIGHT_RED),
-    Clubs("\u2663", Color.DARK_GRAY);
+    Clubs("\u2663", Color.LIGHT_GRAY);
 
     override fun toString(): String {
         return str
