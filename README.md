@@ -21,5 +21,5 @@ It's programmed in Kotlin 1.3.
 
 Run one game
 ----
-./gradlew run
+ ./gradlew run --console=plain
 

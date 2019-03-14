@@ -42,3 +42,7 @@ test {
     useJUnitPlatform()
 }
 
+// So gradle waits for input
+run {
+    standardInput = System.in
+}
