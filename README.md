@@ -14,12 +14,12 @@ Deal four cards in a row face up.
 * When the last four cards have been dealt out and any moves made, the game is over. The fewer cards left in the tableau, the better. To win is to have only the four aces left.
 * When the game ends, the number of discarded cards is your score. The maximum score (and thus the score necessary to win) is 48, which means all cards have been discarded except for the four aces, thus the name of the game.
 
-Programming language
------
-
-It's programmed in Kotlin 1.3.
-
 Run one game
 ----
  ./gradlew run --console=plain
+
+Programming language
+-----
+It's programmed in Kotlin 1.3.
+
 
