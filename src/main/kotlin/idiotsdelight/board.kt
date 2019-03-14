@@ -176,7 +176,8 @@ class Board {
         for (row in 0 until maxSize) {
             for (col in 0..3) {
                 val card = columns[col].getOrNull(row)
-                result += card?.toString() ?: "--"
+
+                result += card?.toString() ?: if (row == 0) "──" else "  "
                 if (col < 3) {
                     result += ' '
                 }
@@ -199,7 +200,7 @@ class Board {
             for (col in 0..3) {
                 val card = columns[col].getOrNull(row)
 
-                result += card?.toColoredString() ?: Kolor.foreground("--", Color.LIGHT_YELLOW)
+                result += card?.toColoredString() ?: if (row == 0) Kolor.foreground("──", Color.GREEN) else "  "
                 if (col < 3) {
                     result += ' '
                 }
