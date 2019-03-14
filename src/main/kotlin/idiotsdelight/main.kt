@@ -3,6 +3,7 @@ package idiotsdelight
 import cards.*
 import com.andreapivetta.kolor.Color
 import com.andreapivetta.kolor.Kolor
+import java.text.DecimalFormat
 
 fun main() {
 
@@ -38,7 +39,7 @@ fun main() {
 
 
     var countSuccess = 0
-    val noOfTimes = 100000
+    val noOfTimes = 10000
     val buckets = hashMapOf<Int, Int>()
     for (key in 4..52) {
         buckets[key] = 0
@@ -61,19 +62,31 @@ fun main() {
         }
 
     }
-    println((countSuccess / noOfTimes.toDouble() * 100).toString() + "%")
 
     val bucketsPercent = hashMapOf<Int, Double>()
-    for (key in 4..52) {
-        val count = buckets[key]
+    for (cardCount in 4..52) {
+        val count = buckets[cardCount]
         if (count != null) {
-            bucketsPercent[key] = Math.round(count / noOfTimes.toDouble() * 1000) / 10.toDouble()
+            bucketsPercent[cardCount] = Math.round(count / noOfTimes.toDouble() * 10000) / 100.toDouble()
         }
 
     }
-    println(bucketsPercent.values)
 
+    print( "Cards left    ")
+    for (cardCount in 4..52) {
+        if (cardCount < 10) {
+            print("┃   " + cardCount + "  ")
+        } else {
+            print("┃  " + cardCount + "  ")
+        }
+    }
+    println()
+    print("% of the runs ")
 
+    for (cardCount in 4..52) {
+        print("┃ " + String.format("%.02f", bucketsPercent[cardCount]) + " ")
+    }
+    println()
 }
 
 
