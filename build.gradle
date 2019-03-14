@@ -11,14 +11,13 @@ buildscript {
 }
 
 plugins {
-    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'application'
 }
 
 application {
     mainClassName = 'idiotsdelight.MainKt'
 }
-
 
 sourceSets {
     main.java.srcDirs += 'src'

@@ -132,7 +132,7 @@ class BoardTests {
                 Card(Rank.Three, Suits.Hearts),
                 Card(Rank.Four, Suits.Hearts),
                 Card(Rank.Five, Suits.Hearts)
-            ) contentEquals board.peekTopRow()
+            ) contentEquals board.peekTopCardsInEachColumn()
         )
     }
 
@@ -251,8 +251,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Spades),
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -277,8 +277,8 @@ class TestIdiotsDelight {
                 Card(Rank.Three, Suits.Hearts),
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -302,8 +302,8 @@ class TestIdiotsDelight {
                 null,
                 Card(Rank.Two, Suits.Clubs),
                 Card(Rank.Two, Suits.Diamonds)
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -328,8 +328,8 @@ class TestIdiotsDelight {
                 null,
                 Card(Rank.Two, Suits.Clubs)
 
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -354,8 +354,8 @@ class TestIdiotsDelight {
                 null,
                 Card(Rank.Two, Suits.Clubs)
 
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -381,7 +381,7 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs),
                 null
 
-            ) contentEquals board.peekTopRow()
+            ) contentEquals board.peekTopCardsInEachColumn()
         )
     }
 
@@ -406,8 +406,8 @@ class TestIdiotsDelight {
                 Card(Rank.Two, Suits.Clubs),
                 null
 
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -441,8 +441,8 @@ class TestIdiotsDelight {
                 null,
                 null
 
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
@@ -467,46 +467,11 @@ class TestIdiotsDelight {
                 null,
                 null
 
-            ) contentEquals board.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
         )
     }
 
-    @Test
-    fun testMoveCardIntoEmptyColumn() {
-        val board = Board()
-        board.addFourNewCards(
-            arrayOf(
-                Card(Rank.Ace, Suits.Hearts),
-                Card(Rank.Two, Suits.Hearts),
-                Card(Rank.Three, Suits.Hearts),
-                Card(Rank.Four, Suits.Hearts)
-            )
-        )
-
-        removeAllLowerCardsInAllSuites(board)
-
-        board.addFourNewCards(
-            arrayOf(
-                Card(Rank.Nine, Suits.Hearts),
-                Card(Rank.Eight, Suits.Hearts),
-                Card(Rank.Seven, Suits.Hearts),
-                Card(Rank.Six, Suits.Hearts)
-            )
-        )
-        removeAllLowerCardsInAllSuites(board)
-        val boardResult = moveCardToEmptySlot(board)
-
-        assertTrue(
-            arrayOf(
-                Card(Rank.Ace, Suits.Hearts),
-                null,
-                null,
-                Card(Rank.Nine, Suits.Hearts)
-            ) contentEquals boardResult.peekTopRow(),
-            Arrays.toString(board.peekTopRow())
-        )
-    }
 
     @Test
     fun testMultiplePossibleBoards() {
@@ -517,7 +482,10 @@ class TestIdiotsDelight {
         board.addCard(1, Card(Rank.Five, Suits.Diamonds))
         board.addCard(2, Card(Rank.Five, Suits.Hearts))
 
+        println(board)
+        println()
         val result = moveCardToEmptySlot(board)
+        println(result)
 
         assertEquals(4, result.cardsCount())
 
@@ -532,10 +500,50 @@ class TestIdiotsDelight {
         board.addCard(1, Card(Rank.Four, Suits.Clubs))
         board.addCard(2, Card(Rank.Five, Suits.Hearts))
 
+        println(board)
+        println()
         val result = moveCardToEmptySlot(board)
+        println(result)
 
         assertEquals(4, result.cardsCount())
 
+    }
+
+    @Test
+    fun testGetBoardVariants(){
+        val board = Board()
+        board.addCard(1, Card(Rank.King, Suits.Hearts))
+        board.addCard(1, Card(Rank.Six, Suits.Clubs))
+        board.addCard(2, Card(Rank.King, Suits.Spades))
+        board.addCard(2, Card(Rank.Two, Suits.Diamonds))
+        board.addCard(3, Card(Rank.Six, Suits.Diamonds))
+        board.addCard(3, Card(Rank.Four, Suits.Hearts))
+
+        println(board)
+        println()
+
+        val variants = board.getBoardVariantsMovingCardToEmptySlot()
+
+        assertEquals(3, variants.size)
+        println( variants[0] )
+        println()
+
+        println( variants[1] )
+        println()
+
+        println( variants[2] )
+        println()
+
+        assertTrue(
+            arrayOf(
+                Card(Rank.Ace, Suits.Hearts),
+                null,
+                null,
+                null
+
+            ) contentEquals board.peekTopCardsInEachColumn(),
+            Arrays.toString(board.peekTopCardsInEachColumn())
+        )
     }
 
 }
