@@ -31,7 +31,7 @@ fun oneInteractiveGame() {
 
 fun manySilentSimulations(noOfTimes: Int) {
 
-    println("Be patient!")
+    println("Be patient, we are running the game $noOfTimes times!")
 
     var countSuccess = 0
     val buckets = hashMapOf<Int, Int>()
