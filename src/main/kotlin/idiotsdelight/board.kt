@@ -218,8 +218,8 @@ class Board {
 
 class IdiotsDelight(
     private var board: Board,
-    private val printSteps: Boolean = false,
-    val interactiveMode: Boolean
+    val interactiveMode: Boolean,
+    private val printSteps: Boolean = false
 ) {
 
     override fun toString(): String {

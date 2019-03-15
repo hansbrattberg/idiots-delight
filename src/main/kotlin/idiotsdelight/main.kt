@@ -5,23 +5,25 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 
 
-class CommandHandeling : CliktCommand() {
-    val oneOrTwo: String by option(help = "How to run, interactive or simulation").prompt("Interactive(1) or Simulation(2)?")
+class CommandHandling : CliktCommand() {
+    val choice: String by option(help = "How to run, interactive or simulation").prompt("Interactive(1), One game(2) or Simulation(3)?")
 
     override fun run() {
-        if (oneOrTwo == "1") {
-            oneInteractiveGame()
+        if (choice == "1") {
+            oneGame()
+        } else if( choice == "2"){
+            oneGame(false)
         } else {
             manySilentSimulations(100000)
         }
     }
 }
 
-fun main(args: Array<String>) = CommandHandeling().main(args)
+fun main(args: Array<String>) = CommandHandling().main(args)
 
-fun oneInteractiveGame() {
+fun oneGame(interactiveMode: Boolean = true) {
     println("Press enter/return key to move the game forward")
-    val score = IdiotsDelight(Board(), printSteps = true, interactiveMode = true).play()
+    val score = IdiotsDelight(Board(), interactiveMode, printSteps = true).play()
     if (score == 4) {
         println("Congrats!")
     } else {
