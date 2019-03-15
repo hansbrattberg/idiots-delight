@@ -16,7 +16,7 @@ Deal four cards in a row face up.
 
 Run one game
 ----
- ./gradlew run --console=plain
+./gradlew run --console=plain --quiet
 
 Programming language
 -----
