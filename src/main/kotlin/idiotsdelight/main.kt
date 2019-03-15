@@ -1,13 +1,23 @@
 package idiotsdelight
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.prompt
 
-fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        oneInteractiveGame()
-    } else {
-        manySilentSimulations(1000000)
+
+class CommandHandeling : CliktCommand() {
+    val oneOrTwo: String by option(help = "How to run, interactive or simulation").prompt("Interactive(1) or Simulation(2)?")
+
+    override fun run() {
+        if (oneOrTwo == "1") {
+            oneInteractiveGame()
+        } else {
+            manySilentSimulations(100000)
+        }
     }
 }
+
+fun main(args: Array<String>) = CommandHandeling().main(args)
 
 fun oneInteractiveGame() {
     println("Press enter/return key to move the game forward")
@@ -20,6 +30,9 @@ fun oneInteractiveGame() {
 }
 
 fun manySilentSimulations(noOfTimes: Int) {
+
+    println("Be patient!")
+
     var countSuccess = 0
     val buckets = hashMapOf<Int, Int>()
     for (key in 4..52) {
@@ -54,7 +67,7 @@ fun manySilentSimulations(noOfTimes: Int) {
     }
 
     print("Cards left    ")
-    for (cardCount in 4..52) {
+    for (cardCount in 4..25) {
         if (cardCount < 10) {
             print("┃   $cardCount  ")
         } else {
@@ -65,8 +78,9 @@ fun manySilentSimulations(noOfTimes: Int) {
     print("% of the runs ")
 
     // use joinToString() on array instead!
-    for (cardCount in 4..52) {
+    for (cardCount in 4..25) {
         print("┃ " + String.format("%.02f", bucketsPercent[cardCount]) + " ")
     }
     println()
 }
+

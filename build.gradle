@@ -32,9 +32,12 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.google.guava:guava:16.0'
-    implementation("com.andreapivetta.kolor:kolor:0.0.2"){
-        transitive = false
-    }
+    implementation("com.andreapivetta.kolor:kolor:0.0.2") // Colors to standard output
+            {
+                transitive = false
+            }
+    implementation 'com.github.ajalt:clikt:1.6.0'    // Comandline stuff
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.0'
 }
 
