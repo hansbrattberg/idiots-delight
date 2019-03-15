@@ -10,6 +10,7 @@ fun main(args: Array<String>) {
 }
 
 fun oneInteractiveGame() {
+    println("Press enter/return key to move the game forward")
     val score = IdiotsDelight(Board(), printSteps = true, interactiveMode = true).play()
     if (score == 4) {
         println("Congrats!")
